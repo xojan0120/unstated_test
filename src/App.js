@@ -1,26 +1,56 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Provider, Subscribe, Container } from 'unstated';
+
+// 参考：https://qiita.com/kaba/items/b05f680f850dd46548f3
+
+// Container: state管理のためのコンポーネント
+class CounterContainer extends Container {
+  state = {
+    count: 0
+  }
+
+  increment() {
+    this.setState({ count: this.state.count + 1 })
+  }
+
+  decrement() {
+    this.setState({ count: this.state.count - 1 })
+  }
+}
+
+//class Counter extends Component {
+//  render() {
+//    return (
+//      <Subscribe to={[CounterContainer]}>
+//        {counter => (
+//          <div>
+//            <button onClick={() => counter.increment()}>+</button>
+//            <div>{counter.state.count}</div>
+//            <button onClick={() => counter.decrement()}>-</button>
+//          </div>
+//        )}
+//      </Subscribe>
+//    )
+//  }
+//}
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      // Provider: このコンポーネント内でSubscriptコンポーネントが使えるようになる。
+      <Provider>
+        {/* Subscribe: Containerのstateやメソッドを渡してくれるコンポーネント */}
+        <Subscribe to={[CounterContainer]}>
+          {/* ↓このcounter(名前は任意)からContainerのstateやメソッドにアクセスできる */}
+          {counter => (
+            <div>
+              <button onClick={() => counter.increment()}>+</button>
+              <div>{counter.state.count}</div>
+              <button onClick={() => counter.decrement()}>-</button>
+            </div>
+          )}
+        </Subscribe>
+      </Provider>
     );
   }
 }
